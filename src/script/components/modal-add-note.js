@@ -1,14 +1,12 @@
 class ModalAddNote extends HTMLElement {
   _shadowRoot = null;
   _style = null;
-  
+
   _isOpen = false;
-  _selectedColor = 'yellow';
-  _colors = ['yellow', 'pink', 'blue', 'green', 'purple', 'orange'];
 
   constructor() {
     super();
-    
+
     this._shadowRoot = this.attachShadow({ mode: 'open' });
     this._style = document.createElement('style');
   }
@@ -137,69 +135,7 @@ class ModalAddNote extends HTMLElement {
         min-height: 120px;
         resize: vertical;
       }
-
-      /* Color Options */
-      .color-options {
-        display: grid;
-        grid-template-columns: repeat(6, 1fr);
-        gap: 12px;
-        max-width: 300px;
-      }
-
-      .color-option {
-        width: 40px;
-        height: 40px;
-        border-radius: 10px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        border: 3px solid transparent;
-        position: relative;
-      }
-
-      .color-option:hover {
-        transform: scale(1.1);
-      }
-
-      .color-option.selected {
-        border-color: #2d3436;
-        transform: scale(1.1);
-      }
-
-      .color-option.selected::after {
-        content: '✓';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        color: #2d3436;
-        font-size: 18px;
-        font-weight: bold;
-      }
-
-      .color-option.yellow { 
-        background: linear-gradient(135deg, #fff9c4, #fff59d); 
-      }
       
-      .color-option.pink { 
-        background: linear-gradient(135deg, #fce4ec, #f8bbd0); 
-      }
-      
-      .color-option.blue { 
-        background: linear-gradient(135deg, #e3f2fd, #bbdefb); 
-      }
-      
-      .color-option.green { 
-        background: linear-gradient(135deg, #e8f5e9, #c8e6c9); 
-      }
-      
-      .color-option.purple { 
-        background: linear-gradient(135deg, #f3e5f5, #e1bee7); 
-      }
-      
-      .color-option.orange { 
-        background: linear-gradient(135deg, #fff3e0, #ffe0b2); 
-      }
-
       /* Modal Buttons */
       .modal-buttons {
         display: flex;
@@ -278,10 +214,6 @@ class ModalAddNote extends HTMLElement {
           font-size: 20px;
         }
 
-        .color-options {
-          grid-template-columns: repeat(3, 1fr);
-        }
-
         .modal-buttons {
           flex-direction: column;
         }
@@ -297,22 +229,26 @@ class ModalAddNote extends HTMLElement {
     this._isOpen = true;
     this.setAttribute('open', '');
     this._focusFirstInput();
-    
-    this.dispatchEvent(new CustomEvent('modal-open', {
-      bubbles: true,
-      composed: true
-    }));
+
+    this.dispatchEvent(
+      new CustomEvent('modal-open', {
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 
   close() {
     this._isOpen = false;
     this.removeAttribute('open');
     this._resetForm();
-    
-    this.dispatchEvent(new CustomEvent('modal-close', {
-      bubbles: true,
-      composed: true
-    }));
+
+    this.dispatchEvent(
+      new CustomEvent('modal-close', {
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 
   toggle() {
@@ -335,31 +271,21 @@ class ModalAddNote extends HTMLElement {
   _resetForm() {
     const titleInput = this._shadowRoot.querySelector('#noteTitle');
     const contentInput = this._shadowRoot.querySelector('#noteContent');
-    
+
     if (titleInput) titleInput.value = '';
     if (contentInput) contentInput.value = '';
-    
-    this._selectedColor = 'yellow';
-    this._updateColorSelection();
+
     this._clearErrors();
   }
 
-  _updateColorSelection() {
-    const colorOptions = this._shadowRoot.querySelectorAll('.color-option');
-    colorOptions.forEach(option => {
-      option.classList.remove('selected');
-      if (option.dataset.color === this._selectedColor) {
-        option.classList.add('selected');
-      }
-    });
-  }
-
   _clearErrors() {
-    const inputs = this._shadowRoot.querySelectorAll('.form-input, .form-textarea');
+    const inputs = this._shadowRoot.querySelectorAll(
+      '.form-input, .form-textarea'
+    );
     const errorMessages = this._shadowRoot.querySelectorAll('.error-message');
-    
-    inputs.forEach(input => input.classList.remove('error'));
-    errorMessages.forEach(msg => msg.classList.remove('show'));
+
+    inputs.forEach((input) => input.classList.remove('error'));
+    errorMessages.forEach((msg) => msg.classList.remove('show'));
   }
 
   _validateForm() {
@@ -367,23 +293,23 @@ class ModalAddNote extends HTMLElement {
     const contentInput = this._shadowRoot.querySelector('#noteContent');
     const titleError = this._shadowRoot.querySelector('#titleError');
     const contentError = this._shadowRoot.querySelector('#contentError');
-    
+
     let isValid = true;
-    
+
     this._clearErrors();
-    
+
     if (!titleInput.value.trim()) {
       titleInput.classList.add('error');
       titleError.classList.add('show');
       isValid = false;
     }
-    
+
     if (!contentInput.value.trim()) {
       contentInput.classList.add('error');
       contentError.classList.add('show');
       isValid = false;
     }
-    
+
     return isValid;
   }
 
@@ -391,34 +317,36 @@ class ModalAddNote extends HTMLElement {
     if (!this._validateForm()) {
       return;
     }
-    
+
     const titleInput = this._shadowRoot.querySelector('#noteTitle');
     const contentInput = this._shadowRoot.querySelector('#noteContent');
-    
+
     const noteData = {
-      id: this._generateId(),
       title: titleInput.value.trim(),
       body: contentInput.value.trim(),
-      color: this._selectedColor,
-      createdAt: new Date().toISOString(),
-      archived: false
     };
-    
-    this.dispatchEvent(new CustomEvent('note-save', {
-      detail: noteData,
-      bubbles: true,
-      composed: true
-    }));
-    
+
+    this.dispatchEvent(
+      new CustomEvent('note-save', {
+        detail: noteData,
+        bubbles: true,
+        composed: true,
+      })
+    );
+
     this.close();
   }
 
   _generateId() {
-    return 'notes-' + Math.random().toString(36).substr(2, 9) + '-' + Date.now().toString(36);
+    return (
+      'notes-' +
+      Math.random().toString(36).substr(2, 9) +
+      '-' +
+      Date.now().toString(36)
+    );
   }
 
   _attachEventListeners() {
-
     const overlay = this._shadowRoot.querySelector('.modal-overlay');
     if (overlay) {
       overlay.addEventListener('click', (e) => {
@@ -427,27 +355,21 @@ class ModalAddNote extends HTMLElement {
         }
       });
     }
-    
+
     const cancelBtn = this._shadowRoot.querySelector('.btn-cancel');
     if (cancelBtn) {
       cancelBtn.addEventListener('click', () => this.close());
     }
-    
+
     const saveBtn = this._shadowRoot.querySelector('.btn-save');
     if (saveBtn) {
       saveBtn.addEventListener('click', () => this._handleSave());
     }
-    
-    const colorOptions = this._shadowRoot.querySelectorAll('.color-option');
-    colorOptions.forEach(option => {
-      option.addEventListener('click', () => {
-        this._selectedColor = option.dataset.color;
-        this._updateColorSelection();
-      });
-    });
-    
-    const inputs = this._shadowRoot.querySelectorAll('.form-input, .form-textarea');
-    inputs.forEach(input => {
+
+    const inputs = this._shadowRoot.querySelectorAll(
+      '.form-input, .form-textarea'
+    );
+    inputs.forEach((input) => {
       input.addEventListener('input', () => {
         input.classList.remove('error');
         const errorMsg = input.parentElement.querySelector('.error-message');
@@ -463,12 +385,12 @@ class ModalAddNote extends HTMLElement {
       if (e.key === 'Escape' && this._isOpen) {
         this.close();
       }
-      
+
       if ((e.ctrlKey || e.metaKey) && e.key === 'Enter' && this._isOpen) {
         this._handleSave();
       }
     };
-    
+
     document.addEventListener('keydown', this._keyboardHandler);
   }
 
@@ -480,10 +402,10 @@ class ModalAddNote extends HTMLElement {
 
   render() {
     this._updateStyle();
-    
+
     this._shadowRoot.innerHTML = '';
     this._shadowRoot.appendChild(this._style);
-    
+
     const template = document.createElement('template');
     template.innerHTML = `
       <div class="modal-overlay">
@@ -512,20 +434,7 @@ class ModalAddNote extends HTMLElement {
             ></textarea>
             <div class="error-message" id="contentError">Please enter content</div>
           </div>
-          
-          <div class="form-group">
-            <label class="form-label">Color Theme</label>
-            <div class="color-options">
-              ${this._colors.map(color => `
-                <div 
-                  class="color-option ${color} ${color === this._selectedColor ? 'selected' : ''}" 
-                  data-color="${color}"
-                  title="${color.charAt(0).toUpperCase() + color.slice(1)}"
-                ></div>
-              `).join('')}
-            </div>
-          </div>
-          
+                    
           <div class="modal-buttons">
             <button class="btn btn-cancel">Cancel</button>
             <button class="btn btn-save">Save Note</button>
@@ -533,7 +442,7 @@ class ModalAddNote extends HTMLElement {
         </div>
       </div>
     `;
-    
+
     this._shadowRoot.appendChild(template.content.cloneNode(true));
   }
 }

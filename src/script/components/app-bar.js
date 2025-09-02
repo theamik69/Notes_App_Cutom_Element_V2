@@ -130,18 +130,20 @@ class AppBar extends HTMLElement {
 
   _handleAddNote() {
     let modal = document.querySelector('modal-add-note');
-    
+
     if (!modal) {
       modal = document.createElement('modal-add-note');
       document.body.appendChild(modal);
     }
-    
+
     modal.open();
-    
-    this.dispatchEvent(new CustomEvent('add-note-click', {
-      bubbles: true,
-      composed: true
-    }));
+
+    this.dispatchEvent(
+      new CustomEvent('add-note-click', {
+        bubbles: true,
+        composed: true,
+      })
+    );
   }
 
   _setupKeyboardShortcuts() {
@@ -151,7 +153,7 @@ class AppBar extends HTMLElement {
         this._handleAddNote();
       }
     };
-    
+
     document.addEventListener('keydown', this._keyboardHandler);
   }
 

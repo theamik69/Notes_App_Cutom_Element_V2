@@ -5,8 +5,7 @@ class Utils {
 
   static isValidInteger(value) {
     return Number.isInteger(value) && Number.isFinite(value);
-  } 
-  
+  }
 }
 
 export default Utils;

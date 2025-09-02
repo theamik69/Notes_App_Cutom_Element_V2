@@ -4,7 +4,7 @@ class NotesContainer extends HTMLElement {
   _shadowRoot = null;
   _style = null;
 
-  _column = null; 
+  _column = null;
   _gutter = 24;
   _minWidth = 320;
 
@@ -12,7 +12,7 @@ class NotesContainer extends HTMLElement {
     return ['column', 'gutter', 'min-width'];
   }
 
-  constructor() { 
+  constructor() {
     super();
 
     this._shadowRoot = this.attachShadow({ mode: 'open' });
@@ -22,8 +22,8 @@ class NotesContainer extends HTMLElement {
   }
 
   _updateStyle() {
-    const gridColumns = this._column 
-      ? `repeat(${this._column}, 1fr)` 
+    const gridColumns = this._column
+      ? `repeat(${this._column}, 1fr)`
       : `repeat(auto-fill, minmax(${this._minWidth}px, 1fr))`;
 
     this._style.textContent = `
@@ -70,7 +70,7 @@ class NotesContainer extends HTMLElement {
     if (!Utils.isValidInteger(newValue) && value !== null) return;
 
     this._column = value === null ? null : newValue;
-    this._updateStyle(); 
+    this._updateStyle();
   }
 
   get column() {
@@ -82,7 +82,7 @@ class NotesContainer extends HTMLElement {
     if (!Utils.isValidInteger(newValue)) return;
 
     this._gutter = newValue;
-    this._updateStyle(); 
+    this._updateStyle();
   }
 
   get gutter() {
@@ -110,16 +110,16 @@ class NotesContainer extends HTMLElement {
     this._updateStyle();
 
     this._shadowRoot.appendChild(this._style);
-    
+
     const container = document.createElement('div');
     container.className = 'list';
     container.innerHTML = '<slot></slot>';
-    
+
     this._shadowRoot.appendChild(container);
   }
 
   attributeChangedCallback(name, oldValue, newValue) {
-    if (oldValue === newValue) return; 
+    if (oldValue === newValue) return;
 
     switch (name) {
       case 'column':
