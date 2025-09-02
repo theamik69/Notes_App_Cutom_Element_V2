@@ -2,7 +2,7 @@
 
 A modern, elegant, and responsive web application for creating and managing personal notes. Built with vanilla JavaScript, Web Components, and integrated with Dicoding Notes API.
 
-![Notes App](https://img.shields.io/badge/version-1.0.0-blue.svg)
+![Notes App](https://img.shields.io/badge/version-2.0.0-blue.svg)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow.svg)
 ![Web Components](https://img.shields.io/badge/Web%20Components-Ready-green.svg)
 ![Webpack](https://img.shields.io/badge/Webpack-5.0-blue.svg)
